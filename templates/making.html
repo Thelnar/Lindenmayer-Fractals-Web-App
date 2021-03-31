@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Please wait while your gif is being generated.</h1>
+<table class="terminal" id="console">
+</table>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+<script language="JavaScript" type="text/javascript">
+    $(document).ready(function(){
+            $.ajax({
+                type: 'POST',
+                url: '{{ request.url_root + url_for('make_a_gif')[1:] }}',
+                data: { "blueprint" : "{{blueprintPath}}" },
+                success: function(response) {
+                    window.location.replace("{{ url_for('gif_page', filename='') }}/" + response);
+                }
+            });
+            // in milliseconds
+            var waitTime = 10;
+            var getConsole = function() {
+            console.log('Sending AJAX request...');
+            $.ajax({
+              type: "GET",
+              url: '{{ request.url_root + url_for('get_console')[1:] }}?escape=true&lines=10',
+              data: {
+                user: 'Ajax',
+            	}
+            }).done(function(msg) {
+              $("#console").html(msg);
+              console.log('success');
+            }).fail(function() {
+              console.log('error');
+            }).always(function() {
+              // Schedule the next request after this one completes,
+              // even after error
+              console.log('Waiting ' + (waitTime / 1000) + ' seconds');
+              setTimeout(getConsole, waitTime);
+            });
+            }
+
+        // Fetch news immediately, then every 10 seconds AFTER previous request finishes
+        getConsole();
+    });
+</script>
+{% endblock %}

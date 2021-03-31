@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, make_response
+from flask import Flask, render_template, redirect, url_for, request, flash, make_response, Markup
 from werkzeug.utils import secure_filename
 import sys
 import io
@@ -102,7 +102,8 @@ def make_a_gif():
 
 @app.route('/test_printing')
 def printing():
-    global buffer
+    for i in range(10):
+        print("test")
     liLinkNames = ['Home',
                    'Make a Fractal',
                    'Clone a Fractal',
@@ -116,12 +117,28 @@ def printing():
                            linkCount=len(liLinkNames),
                            linkNames=liLinkNames,
                            Links=liLinks,
-                           body2=buffer.getvalue())
+                           body2=get_console())
 
 
-@app.route('/grab_console', methods=['POST'])
-def grab_console():
-    pass
+@app.route('/get_console', methods=['GET'])
+def get_console():
+    global buffer
+    lines = request.args.get('lines')
+    escape = request.args.get('escape')
+    strOut = buffer.getvalue()
+    if lines:
+        try:
+            lines = int(lines)
+            liOut = strOut.splitlines()
+            if len(liOut) < lines:
+                liOut += [''] * (lines - len(liOut))
+            strOut = "\n".join(liOut[-lines:])
+        except Exception as e:
+            return "unknown lines parameter passed"
+    if escape:
+        strOut = str(Markup.escape(strOut))
+        strOut = strOut.replace("\n", "<br>")
+    return strOut
 
 
 @app.route('/reset_logs', methods=['GET'])

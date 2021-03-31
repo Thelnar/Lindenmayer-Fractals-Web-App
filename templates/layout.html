@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <span class="preheader">{{ preheader }}</span>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+        <tr>
+            <td>&nbsp;</td>
+            <td class="container" align="left" valign="top" bgcolor="#F0F0F1" class="width-padding"
+                style="padding:30px 30px">
+                <div class="content">
+
+                    <!-- START CENTERED WHITE CONTAINER -->
+                    <table role="presentation" class="main">
+
+                        <!-- START MAIN CONTENT AREA -->
+                        <tr>
+                            <td class="wrapper">
+                                <table role="presentation" width="872" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td align="left" valign="top" bgcolor="#ffffff" class="width-padding"
+                                            style="padding:0px 10px 10px; ">
+                                            {% with messages = get_flashed_messages() %}
+                                            {% if messages %}
+                                                <ul class=flashes>
+                                                {% for message in messages %}
+                                                  <li>{{ message }}</li>
+                                                {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                            {% endwith %}
+                                            {% if error %}
+                                            <p class=error><strong>Error:</strong> {{ error }}</p>
+                                            {% endif %}
+                                            {% block body %}{% endblock %}
+
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <!-- END CENTERED WHITE CONTAINER -->
+
+                    <!-- START FOOTER -->
+                    <div class="footer">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <td class="content-block powered-by">
+                                    {{ footer }}
+                                    <br>Lindenmayer Webapp by Jeff Maher
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- END FOOTER -->
+
+                </div>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block body %}
+                        <tr>
+                            <p>
+                            <h1> {{ salutation }} </h1>
+                                <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                                  <tbody>
+                                    <tr>
+                                      <td align="left">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="3">
+                                          <tbody>
+                                            <tr>
+                                                {% if linkCount %}
+                                                {% for i in range(0,linkCount) %}
+                                                    <td> <a href="{{Links[i]}}">{{linkNames[i]}}</a> </td>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </p>
+                            <p>
+                            <h1> {{ body1 }} </h1>
+                                {% if image1 %}
+                                    <img src="{{ image1 }}" alt="Image">
+                                {% endif %}
+                            </p>
+                            <p>
+                                {{ body2 }}
+                            </p>
+                            <p>
+                                {{ body3 }}
+                            </p><br>
+                            <p>
+                                {{ signature }}
+                            </p>
+                        <tr>
+                            <p>
+                                {{ postscript }}
+                            </p>
+                        </tr>
+                        <!-- END MAIN CONTENT AREA -->
+{% endblock %}
