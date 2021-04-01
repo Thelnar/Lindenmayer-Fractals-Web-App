@@ -10,9 +10,11 @@
                                         <table role="presentation" border="0" cellpadding="0" cellspacing="3">
                                           <tbody>
                                             <tr>
-                                                {% if linkCount %}
-                                                {% for i in range(0,linkCount) %}
-                                                    <td> <a href="{{Links[i]}}">{{linkNames[i]}}</a> </td>
+                                                {% if dctLinks %}
+                                                {% for key in dctLinks %}
+                                                    <td onclick="location.href='{{dctLinks[key]}}'" style="cursor: pointer;">
+                                                        <a href="{{dctLinks[key]}}"> {{key}} </a>
+                                                    </td>
                                                 {% endfor %}
                                                 {% endif %}
                                             </tr>
@@ -25,8 +27,10 @@
                             </p>
                             <p>
                             <h1> {{ body1 }} </h1>
-                                {% if image1 %}
-                                    <img src="{{ image1 }}" alt="Image">
+                                {% if images %}
+                                    {% for image in images %}
+                                    <img src="{{ image }}" alt="Image">
+                                    {% endfor %}
                                 {% endif %}
                             </p>
                             <p>
@@ -38,6 +42,7 @@
                             <p>
                                 {{ signature }}
                             </p>
+                        </tr>
                         <tr>
                             <p>
                                 {{ postscript }}
