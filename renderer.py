@@ -21,6 +21,12 @@ import junkdrawer
 
 
 def render_2d_line_segments(liData, fLimScale=1.1, fLimOffset=1):
+    """
+    Plot a list of numpy arrays representing 2D points.
+    :param liData: List. Each element is a tuple of numpy arrays, which contain the coordinates of lines to be rendered.
+    :param fLimScale: Float. Scaling factor for determining plot limits. A higher value 'zooms out'.
+    :param fLimOffset: Float. Offset factor for determining plot limits. A higher value 'zooms out'.
+    """
     liXs = np.hstack([ra[:, 0] for ra in liData])
     liYs = np.hstack([ra[:, 1] for ra in liData])
     liXs = np.append(liXs, 0)
@@ -42,6 +48,12 @@ def render_2d_line_segments(liData, fLimScale=1.1, fLimOffset=1):
 
 
 def render_3d_line_segments(liData, fLimScale=1.1, fLimOffset=1):
+    """
+    Plot a list of numpy arrays representing 3D points.
+    :param liData: List. Each element is a tuple of numpy arrays, which contain the coordinates of lines to be rendered.
+    :param fLimScale: Float. Scaling factor for determining plot limits. A higher value 'zooms out'.
+    :param fLimOffset: Float. Offset factor for determining plot limits. A higher value 'zooms out'.
+    """
     lXMax = np.max(np.append(np.hstack([ra[:, 0] for ra in liData]), 1))
     lYMax = np.max(np.append(np.hstack([ra[:, 1] for ra in liData]), 1))
     lZMax = np.max(np.append(np.hstack([ra[:, 2] for ra in liData]), 1))
@@ -64,6 +76,10 @@ def render_3d_line_segments(liData, fLimScale=1.1, fLimOffset=1):
 
 
 def render_next_on_close():
+    """
+    Render fractal one generation at a time.
+    Render a plot, on plot close pause for user input. 'end' will end the process
+    """
     lItPerLoop = 6
     fncGeneratorMaker = partial(lindenmayer.lindenator,
                                 rulesandinstructions.liKochCurveRules,
@@ -90,10 +106,16 @@ def render_next_on_close():
 
 
 def init_fig_2d(objFig, objAx, ntArtists):
+    """
+    Init function for animation.FuncAnimation within render_2d_frame_by_frame_animation.
+    """
     return ntArtists
 
 
 def frame_iter_2d(itLoopedGenerator, fncInterpreter, lMod, lLastFrameHang=1):
+    """
+    Frames function for animation.FuncAnimation within render_2d_frame_by_frame_animation.
+    """
     i = 0
     for i in range(lMod-1):
         sText = next(itLoopedGenerator)
@@ -107,6 +129,9 @@ def frame_iter_2d(itLoopedGenerator, fncInterpreter, lMod, lLastFrameHang=1):
 
 
 def update_artists_2d(tFrameYield, ntArtists, tAspectRatio=(1, 1)):
+    """
+    Update function for animation.FuncAnimation within render_2d_frame_by_frame_animation.
+    """
     liData, sTracker = tFrameYield
 
     lXMin = np.min(np.append(np.hstack([ra[:, 0] for ra in liData]), 0))
@@ -127,7 +152,19 @@ def update_artists_2d(tFrameYield, ntArtists, tAspectRatio=(1, 1)):
 def render_2d_frame_by_frame_animation(sName, liRules, dctInstructions, sStartingString, lItPerLoop,
                                        npaStartPos=None, npaStartFac=None,
                                        tAspectRatio=(1, 1), lLastFrameHang=1):
-
+    """
+    Render a fractal as a gif, encoding as a comment the parameters used to make it (its 'makerkey').
+    :param sName: String. Name of gif. Will get appended with timestamp and file extension.
+    :param liRules: List. Stochastic Lindenmayer rules for string replacement.
+    :param dctInstructions: Dictionary. Instructions for interpreting characters in string as drawing directions
+    :param sStartingString: String.  The axiom for the Lindenmayer system.
+    :param lItPerLoop: Integer. The number of generations for iteration.
+    :param npaStartPos: Numpy array.  The starting position of the turtle which draws the fractal.
+    :param npaStartFac: Numpy array.  The starting facing of the turtle which draws the fractal.
+    :param tAspectRatio: Tuple.  The aspect ratio of the resulting plots and gif.
+    :param lLastFrameHang: Integer. The number of frames to let the last frame "hang" on.
+    :return: String. File name of gif.
+    """
     fncGeneratorMaker = partial(lindenmayer.lindenator,
                                 liRules,
                                 sInput=sStartingString,
@@ -226,6 +263,26 @@ def render_2d_frame_by_frame_animation(sName, liRules, dctInstructions, sStartin
         return sFileName
 
 
+def clone_2d_gif(sFile):
+    """
+    Generate a clone of a fractal based on its makerkey.
+    :param sFile: String. Filename of fractal gif, must contain makerkey as a comment.
+    :return: String. File name of new gif.
+    """
+    return render_2d_frame_by_frame_animation(**get_makerkey(sFile))
+
+
+def get_makerkey(fileName):
+    """
+    Unpack the makerkey stored in a fractal.
+    :param sFile: String. Filename of fractal gif, must contain makerkey as a comment.
+    :return: Dictionary. Makerkey.
+    """
+    with Image.open(fileName) as imgGif:
+        dctRenderParams = json.loads(imgGif.info["comment"], cls=junkdrawer.JeffSONDecoder)
+    return dctRenderParams
+
+
 def main():
     render_next_on_close()
     tAspectRatio = (1, 1)
@@ -266,16 +323,6 @@ def main():
     sName = "Plant"
     sFile = render_2d_frame_by_frame_animation(sName, liRules, dctInstructions, sStartingString, lItPerLoop,
                                                npaStartPos, npaStartFac, tAspectRatio, 4)
-
-
-def clone_2d_gif(sFile):
-    return render_2d_frame_by_frame_animation(**get_makerkey(sFile))
-
-
-def get_makerkey(fileName):
-    with Image.open(fileName) as imgGif:
-        dctRenderParams = json.loads(imgGif.info["comment"], cls=junkdrawer.JeffSONDecoder)
-    return dctRenderParams
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import numpy as np
 
 # http://paulbourke.net/fractals/lsys/
-"""Character        Meaning
+""" Idea for character set:
+Character        Meaning
    F	         Move forward by line length drawing a line
    G	         Move forward by line length drawing a line 
    f	         Move forward by line length without drawing a line
@@ -25,6 +26,11 @@ import numpy as np
 
 
 def rotation_matrix_2d(theta):
+    """
+    Create rotation matrix in 2D space based on theta in radians.
+    :param theta: Float. Radians.
+    :return: numpy array. Rotation Matrix.
+    """
     fSin = np.round(np.sin(theta), 10)
     fCos = np.round(np.cos(theta), 10)
     return np.array([[fCos, -fSin],

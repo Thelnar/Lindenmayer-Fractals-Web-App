@@ -18,8 +18,8 @@ def lindenate(liRules, sInput="", lIterations=1):
         or character sets which would match to more than one rule, meaning that, unlike L-systems, the order of rule
         application here matters.  With ordered rule application comes the possibility of a later rule affecting the
         successors of the previous rules inside of a single iteration; what I refer as a rule being "protected".
-        Inputs:
-            liRules:
+        :param Inputs:
+            :param liRules:
                 list of rule dictionaries. Each dctRule must have the following pairs:
                         "name":
                             string. Becomes description for progress bar
@@ -37,11 +37,11 @@ def lindenate(liRules, sInput="", lIterations=1):
                             value for which its corresponding successor, the second element, will be chosen.
                             If the random value is above all options, the successor is an empty string.
                             The tuples MUST be sorted in ascending order by their first element.
-            sInput:
+            :param sInput:
                 String. The text to be mutated by the function
-            lIterations:
+            :param lIterations:
                 Number. The number of times to process the string through the rules.
-        Output:
+        :return:
             String. The input text, as transformed by (lMaxGen - lCurrGen) iterations through liRules.
     """
     # If we're out of iterations to perform...

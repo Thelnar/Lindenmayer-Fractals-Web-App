@@ -1,0 +1,67 @@
+################################################################################
+# This requirements file has been automatically generated from `Pipfile` with
+# `pipenv-to-requirements`
+#
+#
+# This has been done to maintain backward compatibility with tools and services
+# that do not support `Pipfile` yet.
+#
+# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
+# `Pipfile.lock` and then regenerate `requirements*.txt`.
+################################################################################
+
+appdirs==1.4.4
+astroid==2.5.2 ; python_version >= '3.6'
+atomicwrites==1.4.0 ; sys_platform == 'win32'
+attrs==20.3.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+black==19.10b0
+cached-property==1.5.2
+cerberus==1.3.2
+certifi==2020.12.5
+cfgv==3.2.0 ; python_full_version >= '3.6.1'
+chardet==4.0.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+click==7.1.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+colorama==0.4.4 ; sys_platform == 'win32' and sys_platform == 'win32'
+coverage==5.5 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+distlib==0.3.1
+filelock==3.0.12
+identify==2.2.2 ; python_full_version >= '3.6.1'
+idna==2.10 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+iniconfig==1.1.1
+isort==5.8.0 ; python_version >= '3.6' and python_version < '4'
+lazy-object-proxy==1.6.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+mccabe==0.6.1
+nodeenv==1.5.0
+orderedmultidict==1.0.1
+packaging==20.9 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pathspec==0.8.1
+pbr==5.5.1 ; python_version >= '2.6'
+pep517==0.10.0
+pip-shims==0.5.3 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+pipenv-setup==3.1.1
+pipenv-to-requirements==0.9.0
+pipenv==2020.11.15 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pipfile==0.0.2
+plette[validation]==0.2.3 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pluggy==0.13.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pre-commit==2.11.1
+py==1.10.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pylint==2.7.4
+pyparsing==2.4.7 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pytest-cov==2.11.1
+pytest==6.2.2
+python-dateutil==2.8.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pyyaml==5.4.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+regex==2021.3.17
+requests==2.25.1
+requirementslib==1.5.16 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+six==1.15.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+toml==0.10.2 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+tomlkit==0.7.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+typed-ast==1.4.2
+urllib3==1.26.4 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+virtualenv-clone==0.5.4 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+virtualenv==20.4.3 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+vistir==0.5.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+wheel==0.36.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+wrapt==1.12.1

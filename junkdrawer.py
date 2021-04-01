@@ -50,6 +50,11 @@ class JeffSONDecoder(json.JSONDecoder):
 
 
 def generator_looper(fncGeneratorPartial, lMaxLoops=None):
+    """
+    Loop a generator lMaxLoops number of times.  By default, will loop the generator indefinitely.
+    :param fncGeneratorPartial: function.  Returns a generator, which this function loops.
+    :param lMaxLoops: Integer. If present, will cease after this many loops.
+    """
     itTemp = fncGeneratorPartial()
     try:
         next(itTemp)

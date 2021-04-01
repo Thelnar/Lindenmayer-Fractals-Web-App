@@ -1,0 +1,40 @@
+################################################################################
+# This requirements file has been automatically generated from `Pipfile` with
+# `pipenv-to-requirements`
+#
+#
+# This has been done to maintain backward compatibility with tools and services
+# that do not support `Pipfile` yet.
+#
+# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
+# `Pipfile.lock` and then regenerate `requirements*.txt`.
+################################################################################
+
+certifi==2020.12.5
+chardet==4.0.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+click==7.1.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+cycler==0.10.0
+flask==1.1.2
+greenlet==1.0.0 ; python_version >= '3'
+idna==2.10 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+itsdangerous==1.1.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+jinja2==2.11.3 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+kiwisolver==1.3.1 ; python_version >= '3.6'
+markupsafe==1.1.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+matplotlib==3.4.1
+numpy==1.20.2
+pandas==1.2.3
+pillow==8.1.2
+pygifsicle==1.0.2
+pyparsing==2.4.7 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pyqt5-qt5==5.15.2
+pyqt5-sip==12.8.1 ; python_version >= '3.5'
+pyqt5==5.15.4
+python-dateutil==2.8.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pytz==2021.1
+requests==2.25.1
+six==1.15.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+sqlalchemy==1.4.4
+tqdm==4.59.0
+urllib3==1.26.4 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+werkzeug==1.0.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
