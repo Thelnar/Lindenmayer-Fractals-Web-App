@@ -5,6 +5,7 @@ import io
 import os
 from pathlib import Path
 import json
+import random
 # import requests
 # import time
 
@@ -23,56 +24,112 @@ app.config['UPLOAD_FOLDER'] = os.path.join('/static', 'Saved_Animations')
 
 @app.route('/')
 def home():
-    liLinkNames = ['Home',
-                   'Make a Fractal',
-                   'Clone a Fractal',
-                   'Debug Print']
-    liLinks = [url_for('home'),
-               url_for('gif_page', filename='Plant_2020-09-13_20-27-07.gif'),
-               url_for('cloner'),
-               url_for('printing')]
+    """
+    Home page for the app.
+    """
+    dctLinks = {
+        'Home': url_for('home'),
+        'View All Gifs': url_for('gallery'),
+        'Clone From Gif': url_for('submit_gif', askfor='clone'),
+        'Grab Json From Gif': url_for('submit_gif', askfor='json'),
+        'Make From Json': url_for('update_blueprint_json', goto='making'),
+        'View Random Gif': url_for('random_gif'),
+        'View Console Logs': url_for('printing')
+
+    }
     return render_template('main.html',
                            title="Home",
-                           linkCount=len(liLinkNames),
-                           linkNames=liLinkNames,
-                           Links=liLinks,
+                           dctLinks=dctLinks,
                            salutation="Welcome to the Lindenmayer Fractals Web App!",
-                           image1='/static/Example_Fractal.gif')
+                           images=['/static/Example_Fractal.gif'])
 
 
 @app.route('/static/gif/<filename>')
 def gif_page(filename):
-    liLinkNames = ['Home', 'Make a Fractal']
-    liLinks = [url_for('home'), url_for('gif_page', filename='Plant_2020-09-13_20-27-07.gif')]
+    """
+    Interactive page for viewing a fractal in Saved_Animations
+    """
+    dctLinks = {
+        'Home': url_for('home'),
+        'View Json': url_for('json_page', filename=filename),
+        'Generate Gif': url_for('making'),
+        'View Random Gif': url_for('random_gif'),
+    }
     full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     return render_template('main.html',
                            title="Gif: " + filename,
-                           linkCount=len(liLinkNames),
-                           linkNames=liLinkNames,
-                           Links=liLinks,
-                           image1=full_filename)
+                           dctLinks=dctLinks,
+                           images=[full_filename])
 
 
-@app.route('/clone', methods=['POST', 'GET'])
-def cloner():
-    global buffer
-    # chosenFile = "Didn't work"
-    # chosenFile = request.args.get('file', '')
+@app.route('/static/json/<filename>')
+def json_page(filename):
+    """
+    Retrieve makerkey json file from comment of a given fractal in Saved_Animations
+    """
+    if filename.rsplit('.', 1)[1].lower() != "gif":
+        flash('File Chosen Not Gif')
+        return redirect(url_for('Home'))
+    sFileFullName = os.path.join(Path(__file__).parent, 'static', 'Saved_Animations', filename)
+    with Image.open(sFileFullName) as imgGif:
+        jsonBlueprint = imgGif.info["comment"].decode('ASCII')
+    return Markup.escape(jsonBlueprint)
+
+
+@app.route('/gallery')
+def gallery():
+    """
+    Display all fractals stored in Saved_Animations.
+    """
+    dctLinks = {
+        'Home': url_for('home'),
+    }
+    liImages = os.listdir(os.path.join('static', 'Saved_Animations'))
+    liImages = [os.path.join(app.config['UPLOAD_FOLDER'], filename) for filename in liImages]
+    return render_template('main.html',
+                           title="Gallery",
+                           dctLinks=dctLinks,
+                           images=liImages
+                           )
+
+
+@app.route('/random')
+def random_gif():
+    """
+    Redirect to a random gif_page.
+    """
+    fRandomGif = random.choice(os.listdir(os.path.join(Path(__file__).parent, 'static', 'Saved_Animations')))
+    return redirect(url_for('gif_page', filename=fRandomGif))
+
+
+@app.route('/submit_gif', methods=['POST', 'GET'])
+def submit_gif():
+    """
+    Save gif supplied to Saved_Animations.
+    Can return json data or use that json data to create new fractal.
+    """
     # if a file is specified, post to that file and start cloning
+    sAskFor = request.args.get('askfor')
     if request.method == 'POST':
         if 'myfile' not in request.files:
             flash("No myfile in POST")
             return redirect(request.url)
-        chosenFile = request.files['myfile']
-        if chosenFile.filename == '':
+        fileChosen = request.files['myfile']
+        if fileChosen.filename == '':
             flash("No selected file")
             return redirect(request.url)
-        filename = secure_filename(chosenFile.filename)
-        if chosenFile and filename.rsplit('.', 1)[1].lower() == "gif":
-            fileFullName = os.path.join(Path(__file__).parent, 'static', 'Saved_Animations', filename)
-            chosenFile.save(fileFullName)
-            with Image.open(fileFullName) as imgGif:
+        sFileName = secure_filename(fileChosen.filename)
+        if fileChosen and sFileName.rsplit('.', 1)[1].lower() == "gif":
+            sFileFullName = os.path.join(Path(__file__).parent, 'static', 'Saved_Animations', sFileName)
+            fileChosen.save(sFileFullName)
+            if sAskFor == 'nothing':
+                flash(sFileName + " uploaded")
+                return redirect(url_for('home'))
+            with Image.open(sFileFullName) as imgGif:
                 jsonBlueprint = imgGif.info["comment"].decode('ASCII')
+            if sAskFor == 'json':
+                return Markup.escape(jsonBlueprint)
+            # Default behavior is to clone the gif
             with open(os.path.join(Path(__file__).parent, 'static', 'blueprint.json'), 'w+') as f:
                 f.truncate(0)
                 f.seek(0)
@@ -82,16 +139,58 @@ def cloner():
             flash("Unexpected File Type")
             return redirect(request.url)
     else:
-        return render_template('fileupload.html')
+        return render_template('fileupload.html', postto=request.url)
+
+
+@app.route('/update_blueprint', methods=['POST', 'GET'])
+def update_blueprint_json():
+    """
+    Update the blueprint.json used to supply the maker function.
+    """
+    if request.method == 'POST':
+        if 'myfile' not in request.files:
+            flash("No myfile in POST")
+            return redirect(request.url)
+        fileChosen = request.files['myfile']
+        if fileChosen.filename == '':
+            flash("No selected file")
+            return redirect(request.url)
+        sFileName = secure_filename(fileChosen.filename)
+        if not(fileChosen and sFileName.rsplit('.', 1)[1].lower() in ["json", "txt"]):
+            flash("Invalid file submitted")
+            flash((sFileName.rsplit('.', 1)[1].lower()))
+        else:
+            sFileFullName = os.path.join(Path(__file__).parent, 'static', 'blueprint.json')
+            fileChosen.save(sFileFullName)
+            flash(sFileName + " set to blueprint")
+            if request.args.get('goto'):
+                return redirect(url_for(request.args.get('goto')))
+        return redirect(url_for('home'))
+    else:
+        return render_template('fileupload.html', postto=request.url)
 
 
 @app.route('/making', methods=['GET'])
 def making():
-    return render_template('making.html', blueprintPath="blueprint.json")
+    """
+    Generate a new fractal based on the blueprint.json.
+    loading.html contains javascript to show console logs while fractal generates. Redirects when finished.
+    """
+    return render_template('loading.html',
+                           ajaxType='POST',
+                           ajaxUrl=request.url_root + url_for('make_a_gif')[1:],
+                           ajaxData="{ 'blueprint' : 'blueprint.json' }",
+                           ajaxSuccess="window.location.replace('" +
+                                       url_for('gif_page', filename='') +
+                                       "' + response);"
+                           )
 
 
 @app.route('/maker_script', methods=['POST'])
 def make_a_gif():
+    """
+    Script to generate a fractal based on the supplied .json filename.
+    """
     with open(os.path.join(Path(__file__).parent, 'static', request.form['blueprint']), 'r') as f:
         jsonBlueprint = f.read()
     dctMakerKey = json.loads(jsonBlueprint, cls=junkdrawer.JeffSONDecoder)
@@ -102,26 +201,26 @@ def make_a_gif():
 
 @app.route('/test_printing')
 def printing():
-    for i in range(10):
-        print("test")
-    liLinkNames = ['Home',
-                   'Make a Fractal',
-                   'Clone a Fractal',
-                   'Debug Print']
-    liLinks = [url_for('home'),
-               url_for('gif_page', filename='Plant_2020-09-13_20-27-07.gif'),
-               url_for('cloner'),
-               url_for('printing')]
+    """
+    View console logs for debugging purposes.
+    """
+    dctLinks = {
+        'Home': url_for('home'),
+    }
     return render_template('main.html',
                            title="Debugging",
-                           linkCount=len(liLinkNames),
-                           linkNames=liLinkNames,
-                           Links=liLinks,
+                           dctLinks=dctLinks,
                            body2=get_console())
 
 
 @app.route('/get_console', methods=['GET'])
 def get_console():
+    """
+    Return html-friendly console logs.
+    Query string params:
+    escape: any value will prep logs for html insertion
+    lines: returns the last x lines
+    """
     global buffer
     lines = request.args.get('lines')
     escape = request.args.get('escape')
@@ -143,8 +242,12 @@ def get_console():
 
 @app.route('/reset_logs', methods=['GET'])
 def reset_logs():
+    """
+    Reset the console logs and redirect to home.
+    """
     buffer.truncate(0)
     buffer.seek(0)
+    flash("Logs Reset")
     return redirect(url_for('home'))
 
 
