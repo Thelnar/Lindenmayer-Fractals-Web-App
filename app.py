@@ -19,7 +19,7 @@ buffer = io.StringIO()
 app = Flask(__name__)
 app.secret_key = 'Fractals'
 # APP_ROOT = os.path.dirname(os.path.realpath(__file__))
-app.config['UPLOAD_FOLDER'] = os.path.join('/static', 'Saved_Animations')
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'Saved_Animations')
 
 
 @app.route('/')
